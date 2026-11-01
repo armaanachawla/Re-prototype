@@ -14,7 +14,7 @@ const cssSource = await readFile("src/app/globals.css", "utf8");
 const css = (await postcss([tailwind({ optimize: { minify: true } })]).process(cssSource, { from: "src/app/globals.css" })).css;
 
 const result = await build({
-  entryPoints: ["artifact/main.tsx"],
+  entryPoints: ["scripts/artifact-entry.tsx"],
   bundle: true,
   minify: true,
   format: "iife",

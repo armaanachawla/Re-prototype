@@ -1,14 +1,33 @@
 # RE: Recovery, in motion.
 
-An interactive concept prototype for **RE**, a proposed smart knee support and recovery-tracking platform for people recovering from knee injuries or surgery, and for the physiotherapists supporting them.
+**RE** (also called **RE:FORM** in the research notes) is an early-stage concept for a smart knee support and recovery platform. It is designed for people recovering from knee injuries or surgery, and for the physiotherapists who support them.
 
-> **Concept prototype.** The RE wearable and its sensors do not exist yet. Every value in this app is simulated, illustrative sample data. RE is not an existing, clinically validated or approved medical device and is not intended for diagnosis or treatment. The sample exercises are illustrative and are not an exercise prescription.
+This repository holds two connected prototypes:
 
----
+1. **A web app** showing how patients and physiotherapists could review recovery progress.
+2. **A Python experiment** exploring how two motion sensors could estimate knee bend.
 
-## Install and run
+> **Concept prototype.** The wearable and its sensors don't exist yet. All data in this repository is simulated and illustrative. RE is not a clinically validated or approved medical device and is not intended for diagnosis or treatment.
 
-Requirements: **Node.js 20.9 or newer** (tested on Node 22) and npm.
+![The patient home screen of the RE web app](docs/screenshots/patient-overview.png)
+
+## What's in this repository
+
+| Folder | What it is | Start here |
+|---|---|---|
+| [`web-app/`](web-app/) | The interactive prototype: a patient experience and a physiotherapist view, built with Next.js, React and TypeScript | [Web app README](web-app/README.md) |
+| [`research/movement-sensing/`](research/movement-sensing/) | Python experiments estimating knee flexion from a thigh sensor and a shin sensor, using synthetic data | [Research README](research/movement-sensing/README.md) |
+| [`docs/`](docs/) | A project walkthrough and screenshots | [Project walkthrough](docs/project-walkthrough.md) |
+
+## Quick start
+
+### Web app
+
+You need [Node.js](https://nodejs.org) 20.9 or newer.
+
+```bash
+cd web-app
+```
 
 ```bash
 npm install
@@ -18,122 +37,75 @@ npm install
 npm run dev
 ```
 
-Then open **http://localhost:3000**. `npm run dev` keeps running until you press Ctrl+C. The first page load compiles the app and can take a few seconds.
+Then open **http://localhost:3000**. The command keeps running while you use the app; press Ctrl+C to stop it.
 
-Production build:
+### Movement-sensing experiment
+
+You need Python 3.10 or newer.
 
 ```bash
-npm run build
+cd research/movement-sensing
 ```
 
 ```bash
-npm start
+pip install -r requirements.txt
 ```
-
-All quality checks (lint, type-check, build):
 
 ```bash
-npm run check
+python run_all.py
 ```
 
-The site prerenders to static pages and needs no environment variables, backend or database, so it deploys to Vercel, Netlify or any Node host as-is.
+It prints error metrics and saves a plot to `research/movement-sensing/outputs/`. The [research README](research/movement-sensing/README.md) shows how to do this in a virtual environment.
 
-Single shareable HTML file (used for the claude.ai Artifact link):
+## A closer look
 
-```bash
-npm run build:artifact
-```
-
-This writes `artifact-dist/re-recovery.html`, with the app and its styles inlined. In that build, "Print sample report" becomes "View sample report" (on screen) and the CSV download becomes a copy-to-clipboard, because the hosting page blocks printing and downloads.
-
-## What's in the app
-
-Navigation: **Overview · Movement · My Recovery Goals · Activity Log · My Wearable · Physiotherapist View**, plus a **My Recovery / Physiotherapist View** switch in the header. The current view is kept in the URL hash, so links and the browser back button work.
-
-| View | Purpose |
+| | |
 |---|---|
-| **Overview** (patient home) | Answers three questions immediately: *How am I progressing? Am I following my plan? What should I discuss with my physiotherapist?* Also shows a weekly summary in plain English, the knee-bend trend and sessions charts, **Things to discuss with your physiotherapist** (each with what changed, the supporting measurements, why it's worth discussing and what RE can't conclude), goals still in progress, metric explanations, and a reminder that the physiotherapist's plan comes first. |
-| **Movement**: "Movement, made meaningful." | The four metrics (knee bending angle, exercise repetitions, movement quality, left–right comparison). Each one covers what is measured, how the proposed wearable might measure it, what you see, why a physiotherapist may care, and what it can't tell us. Each has its own patient display and interactive chart. Daily activity is shown separately as supporting context only. |
-| **My Recovery Goals** | Patient-specific goals set by the (fictional) physiotherapist, with status (completed / in progress / needs discussion), progress bars, history charts and a filter. Shows the required note: "Your physiotherapist sets your goals. RE helps you track them; it does not determine whether you are medically ready to progress." |
-| **Activity Log** | Every planned exercise, with date, exercise, repetitions, session status and recorded observations. Filter by date range, exercise type and completion status. Selecting an entry opens a detail panel (a bottom sheet on smaller screens) with its measurements and a plain-English explanation. Includes empty and invalid-range states. |
-| **My Wearable** | Illustration of the proposed sleeve with interactive annotations (movement sensors, fit and support zones, connected platform), validation caveats, and a customiser with 6 colours × 3 styles (Everyday, Active, Comfort) that updates the illustration, selected state and description. |
-| **Physiotherapist View** | The same data in more detail: patient overview, flexion over time (both knees), left-vs-right comparison, adherence, rep-to-rep variation, per-exercise completion, goals (achieved / in progress / not yet achieved), a session-by-session timeline and **trends that may warrant clinical review**, with a **Patient-friendly ↔ Technical** toggle. Includes **Print sample report** (print-optimised, labelled SIMULATED) and **Download sample data (CSV)**. |
+| ![Movement section explaining the knee bending angle](docs/screenshots/movement-knee-bend.png) | ![Physiotherapist view with trends that may warrant review](docs/screenshots/physiotherapist-view.png) |
+| **Movement, made meaningful.** Each metric explains what it measures, how it might be measured, and what it can't tell you. | **Physiotherapist View.** The same data with more detail, flags for clinical review and a sample report. |
+| ![Wearable illustration with sensor annotations](docs/screenshots/wearable.png) | ![Synthetic knee-angle estimate from the research experiment](research/movement-sensing/outputs/knee_angle_estimate.png) |
+| **My Wearable.** The proposed sleeve, with clickable annotations and colour and style options. | **Research.** Knee flexion estimated from two simulated sensors, compared with the known angle. |
 
-### Chart readability rules
-
-Every chart uses the shared `ChartCard` frame, which enforces:
-
-- a question-based title and plain-English subheading
-- labelled axes with units
-- the latest value shown prominently, with a previous-period comparison
-- a one-sentence explanation computed from the data
-- a "Why this matters" note
-- glossary tooltips for technical terms (flexion, ROM, SD, IMU…)
-- hover/tap tooltips with date, value, unit and context
-- a shared time-period control (This week / Last 4 weeks / All 8 weeks)
-
-Statuses always pair colour with an icon and words; completion uses fill vs hatch vs dashed outline, so nothing relies on red/green alone.
-
-## Architecture
+## How the two parts connect
 
 ```
-src/
-├── app/                      layout (fonts), page (view switcher), globals.css (design tokens, print rules)
-├── data/sample-patient.ts    Deterministic simulated dataset (the only data source)
-├── lib/
-│   ├── types.ts              Shared data model (RecoveryDataset, Assessment, Session, ExerciseEntry…)
-│   ├── recovery.ts           Pure functions: windows, statuses, goals, observations, review items
-│   ├── app-state.tsx         React context: view, time range, wearable choice, log filters, hash routing
-│   ├── export.ts             CSV export
-│   └── dates.ts              UTC-safe date helpers
-└── components/
-    ├── layout/               Header (nav + audience switch), concept banner, footer
-    ├── views/                Overview, Movement, Goals, ActivityLog, Wearable, Physio, Discussion, PrintReport
-    ├── charts/               ChartCard frame + BendChart, SessionsChart, SideChart, ConsistencyChart,
-    │                         RepsChart, ActivityChart, BendVisual (angle diagram)
-    ├── product/              Parametric KneeSleeve SVG + colour/style options
-    └── ui/                   Segmented control, StatusPill, Card/Callout/ProgressBar, Term (glossary)
+Thigh + shin sensors  →  signal processing  →  validated measurements  →  patient & physiotherapist app
+   (not built yet)       (research/ explores     (future work)              (web-app/ demonstrates
+                          this on synthetic                                  with simulated data)
+                          data)
 ```
 
-**Stack:** Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Recharts 3 · Lucide icons. No backend, authentication, external API, analytics or browser storage.
+None of these steps are connected end to end yet.
 
-## How the sample data works
+## Project status
 
-`src/data/sample-patient.ts` builds one `RecoveryDataset` for a fictional patient, "Alex Morgan" (right knee, week 8 of a 12-week plan, 31 Aug – 25 Oct 2026, physiotherapist "Sam Rivera"):
+| Area | Status |
+|---|---|
+| Web app interface, navigation, charts, filters, customiser, sample report | Working prototype |
+| Patient, physiotherapist, measurements and goals in the app | Simulated sample data |
+| Two-sensor knee-angle estimation | Educational experiment on synthetic data |
+| Physical wearable, sensor hardware, Bluetooth sync | Not built |
+| Measurement accuracy and clinical validation | Not done; required before any real-world use |
 
-- **Assessments:** 16 twice-weekly guided bend assessments for both knees, written by hand so the story is clear (recovering knee 92° → 120°, other knee ≈135°).
-- **Sessions:** 5 planned sessions a week. Missed and partial sessions are fixed by hand; repetition counts, peak bend and rep-to-rep variation come from a **fixed-seed PRNG**, so values are identical on every load, render and browser.
-- **Plan:** targets and thresholds set by the physiotherapist (e.g. bend goal 125° by week 12, review side differences over 10°). Goals are patient-specific; there are no universal clinical thresholds.
-- **Activity:** estimated daily steps as context, with one missing day to show gap handling.
+The [project walkthrough](docs/project-walkthrough.md) lists the next engineering milestones.
 
-Both the patient and physiotherapist views read the same dataset through `lib/recovery.ts`, so summary cards, chart explanations, goals, observations, the report and the CSV always agree. A status is produced only when the data supports it (for example, "Improving compared with last assessment" requires a change of at least 3°). Nothing is labelled healed, safe to exercise or ready to return to sport.
+## Repository layout
 
-## What is simulated
-
-Everything that would come from hardware or a clinic: bend angles, both-knee comparison, repetition counts, movement-consistency values, step estimates, session completion, the patient, the physiotherapist, goals and appointments. The "movement consistency" measure (the standard deviation of peak bend between repetitions) is an **illustrative research concept**, not a validated movement-quality score. Pattern detection is shown only as a **proposed feature requiring validation**.
-
-What genuinely works: the full interface, navigation, view switching, filters, chart interactions, the customiser, the print report and the CSV export.
-
-## Connecting real sensors (what would be required)
-
-1. **Hardware:** a sleeve with at least two inertial measurement units (thigh and shin), plus a reference on the other leg for side-to-side comparison. Firmware for sampling, on-device processing and Bluetooth Low Energy sync.
-2. **Algorithms:** knee-angle estimation from sensor orientation, repetition detection per exercise, and handling of drift, placement variation and calibration.
-3. **Data pipeline:** a mobile app or gateway that turns raw signals into the `Assessment`, `Session` and `ExerciseEntry` shapes in `lib/types.ts`. The UI would need no change; you would replace `SAMPLE_DATASET` in `lib/app-state.tsx` with a loader (async fetching would move into `AppProvider`).
-4. **Platform:** authentication, patient–clinician linking, consent, secure storage, audit logs, and compliance with applicable healthcare privacy and data-protection law. None of this exists in the prototype.
-
-## Validation needed before real-world use
-
-- **Measurement validity and reliability:** compare sensor-derived knee angle against goniometry or motion capture, across sensor placements, body types, skin tones, clothing and recovery stages.
-- **Repetition detection accuracy:** per exercise, including false positives and misses.
-- **Movement-consistency measures:** whether any metric relates meaningfully to clinically observed movement quality. Until then it should not be shown as a score.
-- **Usability and comprehension:** testing with patients (including low health literacy and accessibility needs) and physiotherapists, to check the wording is understood and not over-interpreted.
-- **Comfort, fit and safety:** skin contact, pressure, extended wear (especially the Comfort style) and washability.
-- **Clinical workflow and evidence:** whether the information helps clinical decisions without adding burden.
-- **Regulatory:** assessment of whether the product would be a medical device in target markets, and the appropriate approvals.
-
-## Limitations of this prototype
-
-- Single fictional patient and fixed date window (data ends 25 Oct 2026).
-- State lives in memory and resets on reload (except the current view, which is kept in the URL).
-- Printing uses the browser's print dialog. Choose "Save as PDF" for a file.
-- The product is concept art, not an engineering drawing.
+```
+.
+├── README.md                    You are here
+├── docs/
+│   ├── project-walkthrough.md   How the project was built and how the parts fit together
+│   └── screenshots/             Images used in these READMEs
+├── web-app/                     Next.js prototype (see web-app/README.md)
+│   ├── src/                     App code: views, charts, sample data, logic
+│   ├── scripts/                 Single-file shareable build
+│   └── package.json
+└── research/
+    └── movement-sensing/        Python two-IMU experiment (see its README)
+        ├── reform_sensing.py
+        ├── run_all.py
+        ├── experiments.md
+        ├── data/
+        └── outputs/
+```

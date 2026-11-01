@@ -1,5 +1,7 @@
 # RE:FORM — Coding Agent Project Walkthrough
 
+[← Back to the project overview](../README.md)
+
 > **Document type:** Reconstructed project walkthrough based on the current contents of this repository. This is not an exported or verbatim transcript of an original AI coding-agent session.
 
 ## Project
@@ -37,17 +39,17 @@ Turn the product concept into an interactive application that demonstrates how p
 
 ### Architecture
 
-- `src/app/` — Next.js app layout, page entry point, global styles and error states.
-- `src/components/views/` — patient and physiotherapist screens.
-- `src/components/charts/` — reusable chart frame, tooltips and movement/activity charts.
-- `src/components/product/` — knee-sleeve visualisation and customisation options.
-- `src/components/layout/` and `src/components/ui/` — navigation, notices and reusable interface components.
-- `src/data/sample-patient.ts` — deterministic fictional sample dataset.
-- `src/lib/types.ts` — shared data types.
-- `src/lib/recovery.ts` — calculations for summaries, goals, statuses and observations.
-- `src/lib/app-state.tsx` — shared application state and view/time/filter controls.
-- `src/lib/export.ts` and `src/lib/dates.ts` — CSV export and date utilities.
-- `scripts/build-artifact.mjs` and `artifact/` — standalone artifact build support.
+- `web-app/src/app/` — Next.js app layout, page entry point, global styles and error states.
+- `web-app/src/components/views/` — patient and physiotherapist screens.
+- `web-app/src/components/charts/` — reusable chart frame, tooltips and movement/activity charts.
+- `web-app/src/components/product/` — knee-sleeve visualisation and customisation options.
+- `web-app/src/components/layout/` and `web-app/src/components/ui/` — navigation, notices and reusable interface components.
+- `web-app/src/data/sample-patient.ts` — deterministic fictional sample dataset.
+- `web-app/src/lib/types.ts` — shared data types.
+- `web-app/src/lib/recovery.ts` — calculations for summaries, goals, statuses and observations.
+- `web-app/src/lib/app-state.tsx` — shared application state and view/time/filter controls.
+- `web-app/src/lib/export.ts` and `web-app/src/lib/dates.ts` — CSV export and date utilities.
+- `web-app/scripts/build-artifact.mjs` and `web-app/scripts/artifact-entry.tsx` — standalone artifact build support.
 
 ### Important implementation boundary
 
@@ -75,11 +77,11 @@ A fifth experiment—testing with real IMU recordings and an appropriate referen
 - `research/movement-sensing/experiments.md` — experiment rationale, inputs, outputs, limitations and future validation.
 - `research/movement-sensing/requirements.txt` — Python dependencies.
 - `research/movement-sensing/data/synthetic_two_imu_data.csv` — synthetic two-IMU dataset.
-- `research/movement-sensing/outputs/` — output destination created when the runner is executed.
+- `research/movement-sensing/outputs/` — example plot and metrics; the runner writes its outputs here.
 
 ### Run the Python experiment
 
-From the research folder:
+From the `research/movement-sensing` folder:
 
 ```bash
 python -m pip install -r requirements.txt
@@ -114,6 +116,6 @@ This end-to-end integration has not been built yet.
 
 ## Repository links
 
-- Main application: https://github.com/armaanachawla/Re-prototype/tree/main/src
+- Main application: https://github.com/armaanachawla/Re-prototype/tree/main/web-app
 - Movement-sensing research: https://github.com/armaanachawla/Re-prototype/tree/main/research/movement-sensing
 - Project README: https://github.com/armaanachawla/Re-prototype/blob/main/README.md
